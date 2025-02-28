@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-bookworm
+    container_name: postgres
+    hostname: postgres
+    networks:
+      - n8n
+    ports:
+      - "5432"
+    env_file:
+      - .env
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    hostname: n8n
+    networks:
+      - n8n
+    ports:
+      - "5678"
+    command: start
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      NODEJS_PREFER_IPV4: true
+      N8N_PORT: 5678
+      N8N_PROTOCOL: https
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+  nginx:
+    image: nginx:stable-alpine-slim
+    container_name: nginx
+    hostname: nginx
+    networks:
+      - n8n
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./localhost.crt:/etc/nginx/localhost.crt
+      - ./localhost.key:/etc/nginx/localhost.key
+    depends_on:
+      n8n:
+        condition: service_started
+networks:
+  n8n:
+    name: n8n

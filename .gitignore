@@ -1,0 +1,8 @@
+*.crt
+*.key
+.env
+.*.env
+*.iml
+
+.idea/
+pg-data/
