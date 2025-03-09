@@ -36,6 +36,7 @@ services:
       NODEJS_PREFER_IPV4: true
       N8N_PORT: 5678
       N8N_PROTOCOL: https
+      GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
     env_file:
       - .env
     depends_on:
@@ -59,3 +60,4 @@ services:
 networks:
   n8n:
     name: n8n
+
