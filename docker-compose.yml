@@ -43,6 +43,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ./n8n-data:/data
   nginx:
     image: nginx:stable-alpine-slim
     container_name: nginx
