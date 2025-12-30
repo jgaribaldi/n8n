@@ -54,11 +54,13 @@ services:
     networks:
       - n8n
     ports:
+      - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./localhost.crt:/etc/nginx/localhost.crt
-      - ./localhost.key:/etc/nginx/localhost.key
+      - ./nginx-conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-conf/conf.d/:/etc/nginx/conf.d
+      - ./nginx-conf/localhost.crt:/etc/nginx/localhost.crt
+      - ./nginx-conf/localhost.key:/etc/nginx/localhost.key
     depends_on:
       n8n:
         condition: service_started
