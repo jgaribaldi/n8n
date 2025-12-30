@@ -38,6 +38,8 @@ services:
       N8N_PROTOCOL: https
       GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
       N8N_DEFAULT_LOCALE: es-AR
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      N8N_RESTRICT_FILE_ACCESS_TO: /data
     env_file:
       - .env
     depends_on:
