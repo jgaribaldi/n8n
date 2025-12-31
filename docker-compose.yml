@@ -56,14 +56,21 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
     volumes:
       - ./nginx-conf/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx-conf/conf.d/:/etc/nginx/conf.d
-      - ./nginx-conf/localhost.crt:/etc/nginx/localhost.crt
-      - ./nginx-conf/localhost.key:/etc/nginx/localhost.key
+      - ./certbot-data/conf:/etc/letsencrypt:ro
+      - ./certbot-data/www:/var/www/certbot:ro
     depends_on:
       n8n:
         condition: service_started
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot-data/conf:/etc/letsencrypt
+      - ./certbot-data/www:/var/www/certbot
 networks:
   n8n:
     name: n8n
