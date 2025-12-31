@@ -26,11 +26,14 @@ they will issue a certificate for that domain.
 
 To request a certificate:
 
-- Run `docker compose start nginx -d`
+- Run `docker compose up nginx-http-only -d`
+- Disable the server's firewall, or temporarily allow traffic to the :80 port
+- Ensure that the webserver is accessible by running `curl -v http://servers_domain_name/.well-known/acme-challenge/ping`
 - Run `docker compose run --rm certbot certonly --webroot -w /var/www/certbot
  -d "servers_domain_name" --email "your@email.com" --agree-tos --no-eff-email`
 (be mindful of `servers_domain_name` and `your@email.com`)
 - Run `docker compose down`
+- Re-enable the server's firewall
 
 This will install the certificates in the directory `./certbot-data/conf/`
 

@@ -54,7 +54,6 @@ services:
     networks:
       - n8n
     ports:
-      - "80:80"
       - "443:443"
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
@@ -66,6 +65,18 @@ services:
     depends_on:
       n8n:
         condition: service_started
+  nginx-http-only:
+    image: nginx:stable-alpine-slim
+    container_name: nginx-http-only
+    hostname: nginx-http-only
+    networks:
+      - n8n
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-conf/nginx-http-only.conf:/etc/nginx/nginx.conf
+      - ./certbot-data/conf:/etc/letsencrypt:ro
+      - ./certbot-data/www:/var/www/certbot:ro
   certbot:
     image: certbot/certbot:latest
     volumes:
